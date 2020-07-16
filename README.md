@@ -1,7 +1,7 @@
 # Starter NestJS
 
 ## Setup
-```sh
+```bash
 $ yarn add @nestjs/cli --global
 $ nest --version
 $ nest new project-name
@@ -11,7 +11,7 @@ $ yarn start:dev
 ```
 
 ## Platform
-```sh
+```bash
 $ yarn add @nestjs/platform-express
 ```
 
@@ -29,6 +29,6 @@ const app = await NestFactory.create<NestExpressApplication>(AppModule);
 ```
 
 ## Setup Dependency
-```sh
+```bash
 $ yarn add @nestjs/
 ```
