@@ -1,8 +1,29 @@
 # Starter NestJS
 
-## Git Clone
+## Setup
 ```sh
-$ git clone https://github.com/midnighttime-cha/nestjs-starter.git new-project
-$ cd new-project
+$ yarn add @nestjs/cli --global
+$ nest --version
+$ nest new project-name
+$ cd project-name
+$ yarn install
 $ yarn start:dev
+```
+
+## Platform
+```sh
+$ yarn add @nestjs/platform-express
+```
+
+## Edit main.ts
+```
+...
+const app = await NestFactory.create(AppModule);
+...
+```
+to
+```
+...
+const app = await NestFactory.create<NestExpressApplication>(AppModule);
+...
 ```
