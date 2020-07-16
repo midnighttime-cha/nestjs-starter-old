@@ -16,14 +16,19 @@ $ yarn add @nestjs/platform-express
 ```
 
 ## Edit main.ts
-```
+```typescript
 ...
 const app = await NestFactory.create(AppModule);
 ...
 ```
 to
-```
+```typescript
 ...
 const app = await NestFactory.create<NestExpressApplication>(AppModule);
 ...
+```
+
+## Setup Dependency
+```sh
+$ yarn add @nestjs/
 ```
