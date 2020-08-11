@@ -36,7 +36,9 @@ const port = process.env.HOST_PORT || 3003;
 const app = await NestFactory.create<NestExpressApplication>(AppModule);
 await app.listen(3000);
 ...
+```
 to
+```javascript
 ...
 const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), {
   logger: new MyLogger() // Use LoggerService from ./shared/logger-service.ts
@@ -78,4 +80,5 @@ await app.listen(port);
 await Logger.warn("==============================")
 await Logger.log(`Server running on ${process.env.API_HOST}:${port}`, 'Bootstrap');
 await Logger.warn("==============================")
+...
 ```
