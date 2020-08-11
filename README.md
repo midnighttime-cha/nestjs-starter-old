@@ -11,19 +11,8 @@ $ yarn start:dev
 ```
 
 ## Edit main.ts
-```typescript
-...
-const app = await NestFactory.create(AppModule);
-...
-```
-to
-```typescript
-...
-const app = await NestFactory.create<NestExpressApplication>(AppModule);
-...
-```
 
-## Setup main.ts
+### import dependency and handdle file.
 ```javascript
 $ import 'dotenv/config';
 ...
@@ -32,7 +21,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
 const bodyParser = require('body-parser');
 ...
-#Handdle file.
+//Handdle file.
 import { MyLogger } from './shared/logger/logger.service';
 import { LoggingInterceptor } from './shared/interceptor/logging.interceptor';
 import { HttpExceptionFilter } from './shared/filter/http-exception.filter';
@@ -42,13 +31,11 @@ const port = process.env.HOST_PORT || 3003;
 
 ## Setup bootstrap in main.ts
 
-### Chage
+### Chage here.
 ```javascript
 const app = await NestFactory.create<NestExpressApplication>(AppModule);
-```
+...
 to
-
-```javascript
 ...
   const app = await NestFactory.create<NestExpressApplication>(AppModule, new ExpressAdapter(), {
     logger: new MyLogger()
