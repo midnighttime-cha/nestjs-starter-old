@@ -33,6 +33,7 @@ const port = process.env.HOST_PORT || 3003;
 
 ### Chage here.
 ```javascript
+...
 const app = await NestFactory.create<NestExpressApplication>(AppModule);
 await app.listen(3000);
 ...
