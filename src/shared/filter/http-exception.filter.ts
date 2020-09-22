@@ -14,19 +14,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
-    const authorization = (`${request.headers.authorization}`.split('Bearer '))[1];
+    let status = exception.getStatus();
 
-    if (exception.getStatus() === HttpStatus.UNAUTHORIZED) {
-      if (typeof exception.response !== 'string') {
-        exception.response['message'] = exception.response.message || 'You do not have permission to access this resource';
-      }
-    } else if (exception.getStatus() == HttpStatus.FORBIDDEN) {
-      const bearer = jwt.decode(authorization);
-      if (bearer[`exp`]) {
-        if (bearer[`exp`] < (Date.now() / 1000)) {
-          if (typeof exception.response !== 'string') {
-            exception.response['message'] = exception.response.message || 'You do not have permission to access this resource';
+    const authorization = (`${request.headers.authorization}`.split('Bearer '))[1];
+    if (authorization) {
+      if (exception.getStatus() === HttpStatus.UNAUTHORIZED) {
+        if (typeof exception.response !== 'string') {
+          exception.response['message'] = exception.response.message || 'You do not have permission to access this resource';
+        }
+      } else if (exception.getStatus() == HttpStatus.FORBIDDEN) {
+        const bearer = jwt.decode(authorization);
+        if (bearer && bearer[`exp`]) {
+          if (bearer[`exp`] < (Date.now() / 1000)) {
+            if (typeof exception.response !== 'string') {
+              exception.response['message'] = exception.response.message || 'You do not have permission to access this resource';
+            }
           }
         }
       }
@@ -37,7 +39,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toLocaleString(),
       path: request.url,
       method: request.method,
-      message: "error : " + (typeof exception.message.message !== 'undefined' ? exception.message.message : exception.message),
+      message: "Error => " + (typeof exception.message.message !== 'undefined' ? exception.message.message : exception.message),
       displayTotal: 0,
       total: 0,
       state: null,

@@ -1,5 +1,5 @@
 import { createParamDecorator } from '@nestjs/common';
-import CryptoJS = require('crypto-js');
+const CryptoJS = require('crypto-js');
 
 export const User = createParamDecorator((data, req) => {
   const userData = req.args[0].user;

@@ -1,5 +1,3 @@
-import { time } from "console";
-
 export class DatetimeService {
   datetimeToServer(datetime = null) {
     const _datetime = this.datetimeShort(datetime);
@@ -11,7 +9,7 @@ export class DatetimeService {
   }
 
   dateToServer(date = null) {
-    const _date = this.dateShort(date);
+    const _date = this.dateShort(date).split('/');
     return `${_date[2]}-${_date[1]}-${_date[0]}`;
   }
 
@@ -42,11 +40,20 @@ export class DatetimeService {
       d = new Date();
     }
 
-    return d.toLocaleString('en-TH', {
+    const _date = d.toLocaleString('en-TH', {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     });
+
+    const [months, dates, years] = _date.split('/');
+    return `${dates}/${months}/${years}`;
+  }
+
+  addDate(date = null, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
   }
 
   format(type, datetime = null) {
@@ -54,43 +61,47 @@ export class DatetimeService {
     let d: any;
     switch (type) {
       case 'YY':
-        d = this.dateShort(datetime);
+        d = this.dateToServer(datetime);
         date_str = `${d.slice(2, 4)}`;
         break;
       case 'YYYY':
-        d = this.dateShort(datetime);
+        d = this.dateToServer(datetime);
         date_str = `${d.slice(2, 4)}`;
         break;
       case 'MM':
-        d = this.dateShort(datetime);
+        d = this.dateToServer(datetime);
         date_str = `${d.slice(5, 7)}`;
         break;
       case 'DD':
-        d = this.dateShort(datetime);
+        d = this.dateToServer(datetime);
         date_str = `${d.slice(8, 10)}`;
         break;
       case 'YYMM':
-        d = this.dateShort(datetime);
+        d = this.dateToServer(datetime);
         date_str = `${d.slice(2, 4)}${d.slice(5, 7)}`;
         break;
       case 'YYYYMM':
-        d = this.dateShort(datetime);
+        d = this.dateToServer(datetime);
         date_str = `${d.slice(0, 4)}${d.slice(5, 7)}`;
         break;
       case 'YYMMDD':
-        d = this.dateShort(datetime);
+        d = this.dateToServer(datetime);
         date_str = `${d.slice(2, 4)}${d.slice(5, 7)}${d.slice(8, 10)}`;
         break;
       case 'YYYYMMDD':
         date_str = (this.dateToServer(datetime)).replace('-', '');
         break;
       case 'YY-MM':
-        d = this.dateShort(datetime);
+        d = this.dateToServer(datetime);
         date_str = `${d.slice(2, 4)}-${d.slice(5, 7)}`;
         break;
       case 'YY-MM-DD':
-        d = this.dateShort(datetime);
+        d = this.dateToServer(datetime);
         date_str = `${d.slice(2, 4)}-${d.slice(5, 7)}-${d.slice(8, 10)}`;
+        break;
+      case 'YYYY-MM':
+        d = this.dateToServer(datetime);
+        date_str = d.slice(0, 7);
         break;
       case 'YYYY-MM-DD':
         date_str = this.dateToServer(datetime);

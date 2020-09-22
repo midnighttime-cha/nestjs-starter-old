@@ -1,4 +1,4 @@
-import { LoggerService } from '@nestjs/common';
+import { LoggerService, Logger } from '@nestjs/common';
 const fs = require('fs');
 const logDir = 'logs';
 const date = new Date().toISOString().substr(0, 10);
@@ -29,6 +29,7 @@ export class MyLogger implements LoggerService {
     });
   }
   error(message: string, trace: string) {
+    Logger.error(message, trace);
     if (!fs.existsSync(`${logDir}/error`)) {
       fs.mkdirSync(`${logDir}/error`);
     }
@@ -37,6 +38,7 @@ export class MyLogger implements LoggerService {
     });
   }
   warn(message: string, trace: string) {
+    Logger.warn(message, trace);
     if (!fs.existsSync(`${logDir}/warn`)) {
       fs.mkdirSync(`${logDir}/warn`);
     }
