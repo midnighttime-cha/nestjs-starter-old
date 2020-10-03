@@ -1,6 +1,5 @@
 import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, BeforeInsert, getManager, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import moment = require('moment');
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UserRO } from './dto/user.dto';
@@ -10,9 +9,13 @@ import { UserGroups } from './user-group.entity';
 import { UserTitlenames } from './user-titlename.entity';
 import { SystemSettings } from '../setting/setting.entity';
 import { Companies } from '../company/company.entity';
+import { DatetimeService } from 'src/shared/helper/datetime.service';
 
 @Entity({ name: 'users' })
-export class Users {
+export class Users extends DatetimeService {
+  constructor() {
+    super();
+  }
   @PrimaryGeneratedColumn({ name: 'id' }) id: number;
   @Column({ nullable: true, unique: true, name: 'code' }) code: string;
   @Column({ name: 'type' }) type: string;
@@ -63,7 +66,7 @@ export class Users {
 
   @BeforeInsert()
   async hashPassword() {
-    const date = moment().format('YYMM');
+    const date = this.format('YYMM');
     const countUser = await getManager().getRepository(Users).count({ type: this.type });
     this.code = `${this.type}${date}${`${(countUser + 1)}`.padStart(4, '0')}`;
     this.password = await bcrypt.hash(this.password.trim(), 10);
