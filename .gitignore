@@ -1,6 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,node,images,video,adobe,microsoftoffice
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,visualstudiocode,node,images,video,adobe,microsoftoffice
 
+# Deploy
+ormconfig.json
+deploy.sh
+Dockerfile
+
 ### Adobe ###
 # Adobe Source Files
 *.psd

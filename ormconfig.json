@@ -1,13 +1,16 @@
 {
-  "type": "mysql",
-  "host": "localhost",
-  "port": 3306,
-  "username": "root",
-  "password": "root",
-  "database": "test",
+  "name": "default",
+  "type": "postgres",
+  "host": "159.65.134.122",
+  "port": 5432,
+  "username": "hotelbooking",
+  "password": "H0+e|B00k!ng",
+  "database": "hotelbooking_db",
+  "schema": "projects",
   "entities": [
-    "dist/**/*.entity{.ts,.js}"
+    "dist/**/**/**/*.entity{.ts,.js}"
   ],
-  "synchronize": true,
-  "logging": true
+  "logging": true,
+  "connectTimeout": 5000,
+  "synchronize": false
 }

@@ -1,6 +1,6 @@
+import { Users } from "src/common/user/entities/user.entity";
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne, getManager, OneToOne, OneToMany } from "typeorm";
 import { Languages } from "./language.entity";
-import { Users } from "../user/user.entity";
 
 @Entity({ name: 'system_settings' })
 export class SystemSettings {
