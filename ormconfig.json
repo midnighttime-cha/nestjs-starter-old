@@ -1,12 +1,12 @@
 {
   "name": "default",
   "type": "postgres",
-  "host": "159.65.134.122",
+  "host": "[DB_HOST]",
   "port": 5432,
-  "username": "hotelbooking",
-  "password": "H0+e|B00k!ng",
-  "database": "hotelbooking_db",
-  "schema": "projects",
+  "username": "[DB_USERNAME]",
+  "password": "[DB_PASSWORD]",
+  "database": "[DB_DATABASENAME]",
+  "schema": "[SCHEMA]",
   "entities": [
     "dist/**/**/**/*.entity{.ts,.js}"
   ],
