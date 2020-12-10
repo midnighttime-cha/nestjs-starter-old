@@ -36,7 +36,7 @@ async function bootstrap() {
     swaggerOptions: { docExpansion: 'list', defaultModelsExpandDepth: -1, filter: true },
   };
 
-  const setVersion = '1.0 build 20200811.1823';
+  const setVersion = '1.0 build 20201210.1035';
 
   const options = new DocumentBuilder()
     .addServer(`${process.env.API_HOST}`, 'Starter API') // URL for production
