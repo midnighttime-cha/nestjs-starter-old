@@ -1,12 +1,16 @@
-import { Users } from "src/common/user/entities/user.entity";
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne, getManager, OneToOne, OneToMany } from "typeorm";
 import { Languages } from "./language.entity";
+import { SettingRO } from "../dto/setting.dto";
 
-@Entity({ name: 'system_settings' })
-export class SystemSettings {
+@Entity({ name: 'settings' })
+export class Settings {
   @PrimaryGeneratedColumn({ name: 'id' }) id: number;
   @Column({ name: 'user_id' }) userId: number;
+
+  @ManyToOne(type => Languages, lang => lang.id, { cascade: true })
+  @JoinColumn({ name: 'language_id' }) languages: Languages
   @Column({ name: 'language_id' }) languageId: number;
+
   @Column({ name: 'default', default: false }) default: boolean;
   @Column({ name: 'logo', nullable: true }) logo: string;
   @Column({ name: 'icon_header', nullable: true }) iconHeader: string;
@@ -28,11 +32,26 @@ export class SystemSettings {
   @CreateDateColumn({ name: 'create_at', select: false }) createAt: Date;
   @UpdateDateColumn({ name: 'modify_at', update: false, select: false }) modifyAt: Date;
 
-  @ManyToOne(type => Users, user => user.id, { cascade: true }) @JoinColumn({ name: 'user_id' }) users: Users;
-  @ManyToOne(type => Languages, lang => lang.id, { cascade: true }) @JoinColumn({ name: 'language_id' }) languages: Languages;
+  async countData() {
+    return await getManager().getRepository(Settings).count({ isDelete: false });
+  }
 
-  async totalRow() {
-    const total = await getManager().getRepository(SystemSettings).count({ isDelete: false });
-    return total;
+  async toResponseObject(lang: string = ''): Promise<SettingRO> {
+    const total = await this.countData();
+    const { id, userId, languageId, logo, iconHeader, titleTH, titleEN, titleCN, orgNameTH, orgNameEN, orgNameCN, orgPrefixnameTH, orgPrefixnameEN, orgPrefixnameCN, emailContact, emailPassword, languages } = this;
+    let responseObject: any = { id, userId, languageId, logo, iconHeader, emailContact, emailPassword };
+    if (lang != '') {
+      Object.assign(responseObject, {
+        title: this[`${`title${lang}`}`],
+        orgName: this[`${`orgName${lang}`}`],
+        orgPrefixname: this[`${`orgPrefixname${lang}`}`],
+        // users: users ? `${users[`firstname${lang}`]} ${users[`lastname${lang}`]}` : "",
+        lang: languages ? languages.prefixEN.toLocaleUpperCase() : "",
+        total
+      });
+    } else {
+      Object.assign(responseObject, { titleTH, titleEN, titleCN, orgNameTH, orgNameEN, orgNameCN, orgPrefixnameTH, orgPrefixnameEN, orgPrefixnameCN, total });
+    }
+    return await responseObject;
   }
 }

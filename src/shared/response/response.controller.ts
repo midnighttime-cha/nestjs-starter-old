@@ -1,13 +1,16 @@
 import { Injectable, HttpStatus, Logger } from '@nestjs/common';
 import { HttpExceptionFilter } from '../filter/http-exception.filter';
 import { MyLogger } from '../logger/logger.service';
+import { EventLogService } from 'src/common/setting/event-log/event-log.service';
+import * as jwt from 'jsonwebtoken';
 import { DatetimeService } from '../helper/datetime.service';
 
 @Injectable()
 export class ResponseController extends HttpExceptionFilter {
   constructor(
     private readonly myLogger: MyLogger,
-    private readonly datetime: DatetimeService
+    private readonly datetime: DatetimeService,
+    private readonly eventLogService: EventLogService
   ) {
     super()
   }
@@ -32,12 +35,11 @@ export class ResponseController extends HttpExceptionFilter {
     }
   }
 
-  private async responseData(req, msgCode, status, items, total: any = 0, lang: string = 'EN', state = {}) {
+  private async responseData(req, msgCode, status, items, total: any = 0, lang: string = 'EN', state = {}, sumary = null) {
     const message = await this.getErrMessage(msgCode, lang);
-
-    return {
+    const responseItems = {
       status,
-      timestamp: this.datetime.datetimeToServer(),
+      timestamp: this.datetime.format('YYYY-MM-DD H:i:s'),
       path: req.path,
       method: req.method,
       message,
@@ -45,49 +47,71 @@ export class ResponseController extends HttpExceptionFilter {
       total,
       state,
       items
-    }
+    };
+    if (sumary) Object.assign(responseItems, { sumary });
+    return responseItems;
   }
 
-  public async responseFindSuccess(req: any, res: any, items: any = [], total: any = 0, lang: string = 'EN') {
+  public async responseFindSuccess(req: any, res: any, items: any = [], total: any = 0, lang: string = 'EN', sumary = null) {
     return await res.status(HttpStatus.OK)
       .json(
-        await this.responseData(req, (HttpStatus.OK ? 100 : 888), HttpStatus.OK, items, total, lang)
+        await this.responseData(req, (HttpStatus.OK ? 100 : 888), HttpStatus.OK, items, total, lang, {}, sumary)
       )
   }
 
-  public async responseFindOneSuccess(req: any, res: any, items: any, total: number = 0, lang: string = 'EN') {
+  public async responseFindOneSuccess(req: any, res: any, items: any, total: number = 0, lang: string = 'EN', sumary = null) {
     return res.status(HttpStatus.OK)
       .json(
-        await this.responseData(req, (HttpStatus.OK ? 100 : 888), HttpStatus.OK, items, (!this.isEmpty(items) ? 1 : total))
+        await this.responseData(req, (HttpStatus.OK ? 100 : 888), HttpStatus.OK, items, (!this.isEmpty(items) ? 1 : total), lang, {}, sumary)
       )
   }
 
   public async responseAuthSuccess(req: any, res: any, items: any, total: number = 0, lang: string = 'EN') {
+    if (!this.isEmpty(items)) {
+      await this.addEventLog(req, items.access_token);
+    }
     return res.status(HttpStatus.CREATED)
       .json(
         await this.responseData(req, 100, HttpStatus.CREATED, items, (!this.isEmpty(items) ? 1 : total), lang)
       )
   }
 
-  public async responseCreateSuccess(req: any, res: any, items: any, msgCode: number = 100, lang: string = 'EN') {
+  public async responseCreateSuccess(req: any, res: any, items: any, msgCode: number = 100) {
+    if (req.headers.authorization) {
+      await this.addEventLog(req);
+    }
     return res.status(HttpStatus.CREATED)
       .json(
         await this.responseData(req, msgCode, HttpStatus.CREATED, items)
       )
   }
 
-  public async responseUpdateSuccess(req: any, res: any, items: any, lang: string = 'EN') {
+  public async responseUpdateSuccess(req: any, res: any, items: any) {
+    if (req.headers.authorization) {
+      await this.addEventLog(req);
+    }
     return res.status(HttpStatus.OK)
       .json(
         await this.responseData(req, (HttpStatus.OK ? 100 : 300), HttpStatus.OK, items)
       )
   }
 
-  public async responseDeleteSuccess(req: any, res: any, deleted: boolean = false, lang: string = 'EN') {
+  public async responseDeleteSuccess(req: any, res: any, deleted: boolean = false) {
+    if (req.headers.authorization) {
+      await this.addEventLog(req);
+    }
     return res.status(HttpStatus.NO_CONTENT)
       .json(
         await this.responseData(req, (deleted ? 100 : 400), HttpStatus.NO_CONTENT, deleted)
       )
+  }
+
+  private async addEventLog(req, payload = null) {
+    const authorization = (`${req.headers.authorization}`.split('Bearer '))[1];
+    const authorities: any = jwt.decode(payload ? payload : authorization);
+    const userId: number = authorities.id;
+    const dataLog = { userId, ip: `${req.ip}`, method: `${req.method}`, path: `${req.path}`, requestPayload: `${JSON.stringify(req.body)}`, origin: `${req.headers.host}` };
+    await this.eventLogService.create(authorities.id, dataLog);
   }
 
   private errorMsg(code: string) {

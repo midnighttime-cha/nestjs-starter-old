@@ -1,20 +1,64 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { AddressBasketDTO } from "src/common/basket/dto/address-basket.dto";
+import { UserAuthDTO } from "./user-auth.dto";
 
 export class UserDTO {
-  @IsString() @ApiProperty({ required: true, default: 'US' }) type: string;
-  groupId: number;
-  companyId: number;
-  @IsNotEmpty() @ApiProperty({ required: true }) username: string;
-  @IsString() @ApiProperty({ required: true }) password: string;
-  @IsNumber() @ApiProperty({ required: true }) titlenameId: number;
+  @ApiProperty({ required: true }) type: string;
+  @ApiProperty({ required: false }) level: number;
+  @ApiProperty({ required: false }) groupId: number;
+  @ApiProperty({ required: false }) companyId: number;
+  @ApiProperty({ required: true }) username: string;
+  @ApiProperty({ required: false }) password: string;
+  @ApiProperty({ required: false }) titlenameId: number;
   @ApiProperty({ required: true }) firstnameTH: string;
   @ApiProperty({ required: true }) firstnameEN: string;
   @ApiProperty({ required: false }) firstnameCN: string;
-  @ApiProperty({ required: true }) email: string;
   @ApiProperty({ required: false }) lastnameTH: string;
   @ApiProperty({ required: false }) lastnameEN: string;
   @ApiProperty({ required: false }) lastnameCN: string;
+  @ApiProperty({ required: false }) idCard: string;
+  @ApiProperty({ required: false }) birthDay: Date;
+  @ApiProperty({ required: false }) mobileNo: string;
+  @ApiProperty({ required: true }) email: string;
+  @ApiProperty({ required: false }) gender: string;
+  @ApiProperty({ required: false }) address: AddressBasketDTO;
+  @ApiProperty({ required: false }) userAuthens: UserAuthDTO[];
+}
+
+export class UserRegisterDTO {
+  @ApiProperty({ required: true }) type: string;
+  @ApiProperty({ required: false }) companyId: number;
+  @ApiProperty({ required: true }) username: string;
+  @ApiProperty({ required: false }) password: string;
+  @ApiProperty({ required: false }) titlenameId: number;
+  @ApiProperty({ required: true }) firstnameTH: string;
+  @ApiProperty({ required: true }) firstnameEN: string;
+  @ApiProperty({ required: false }) firstnameCN: string;
+  @ApiProperty({ required: false }) lastnameTH: string;
+  @ApiProperty({ required: false }) lastnameEN: string;
+  @ApiProperty({ required: false }) lastnameCN: string;
+  @ApiProperty({ required: false }) idCard: string;
+  @ApiProperty({ required: false }) birthDay: Date;
+  @ApiProperty({ required: false }) mobileNo: string;
+  @ApiProperty({ required: true }) email: string;
+  @ApiProperty({ required: false }) gender: string;
+}
+
+export class UserRO {
+  id: number;
+  code: string;
+  type: string;
+  level: number;
+  groupId: number;
+  companyId: number;
+  password: string;
+  titlenameId: number;
+  firstnameTH: string;
+  firstnameEN: string;
+  firstnameCN: string;
+  lastnameTH: string;
+  lastnameEN: string;
+  lastnameCN: string;
   idCard: string;
   religion: string;
   nationality: string;
@@ -26,31 +70,20 @@ export class UserDTO {
   faxNo: string;
   faxExt: string;
   mobileNo: string;
+  email: string;
   googleId: string;
-  @ApiProperty({ required: false }) wechatId: string;
-  @ApiProperty({ required: false }) wxid: string;
-  @ApiProperty({ required: false }) agencyCode: string;
+  wechatId: string;
   lineid: string;
   website: string;
   gender: string;
   image: string;
   imageThumb: string;
   imagePath: string;
-}
-
-export class UserRO {
-  id: number;
-  code: string;
-  groupId: number;
-  companyId: number;
-  username: string;
-  email: string;
-  firstnameTH: string;
-  firstnameEN: string;
-  firstnameCN: string;
-  lastnameTH: string;
-  lastnameEN: string;
-  lastnameCN: string;
-  token: string;
-  agencyCode: string;
+  secret: string;
+  isActive: boolean;
+  isDelete: boolean;
+  createBy: number;
+  modifyBy: number;
+  createAt: Date;
+  modifyAt: Date;
 }
