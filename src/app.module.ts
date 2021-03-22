@@ -4,11 +4,7 @@ import { AppService } from './app.service';
 import { ResponseModule } from './shared/response/response.module';
 import { HelperModule } from './shared/helper/helper.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { InsuranceModule } from './business/insurance/insurance.module';
 import { AuthModule } from './auth/auth.module';
-import { FlightModule } from './business/flight/flight.module';
-import { ThirstPartyModule } from './common/thirst-party/thirst-party.module';
-import { HotelModule } from './business/hotel/hotel.module';
 
 @Module({
   imports: [
@@ -30,10 +26,6 @@ import { HotelModule } from './business/hotel/hotel.module';
     AuthModule,
     ResponseModule,
     HelperModule,
-    InsuranceModule,
-    FlightModule,
-    ThirstPartyModule,
-    HotelModule
   ],
   controllers: [AppController],
   providers: [AppService],
